@@ -1,0 +1,205 @@
+﻿@using Hk.Document.Domain
+@model Hk.Document.DataContract.Dtos.ActivityDto
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+    <title>@Model.Title - 医客</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <meta content="telephone=no" name="format-detection"/>
+    <style type="text/css">
+        * {
+            margin: 0;
+            padding: 0;
+            color: #666;
+        }
+
+        .maintop {background-color: rgba(0, 0, 0, 0.7);height: 10%;width: 100%;text-align: left;position: relative;display: none;}
+        .maintop img {width: 45px;display: block;text-align: left;position: relative;left: -20%;margin-top: 0;}
+        .maintop a {float: left;color: #fff;position: absolute;top: 30%;left: 40%;text-decoration: none; }
+
+        .art_wrap {
+            width: 94%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .art_btn {
+            position: fixed;
+            left: 0;
+            bottom: 0px;
+            width: 100%;
+            background-color: #fff;
+            height: 60px;
+        }
+
+        .art_btn a {
+            background-color: #3871cb;
+            width: 252px;
+            margin-left: auto;
+            margin-right: auto;
+            border-radius: 6px;
+            padding-top: 6px;
+            padding-bottom: 6px;
+            margin-top: 12px;
+            display: block;
+            text-align: center;
+            color: #fff;
+            font-size: 22px;
+            text-decoration: none;
+        }
+
+        .art_wrap p {
+            font-size: 16px;
+            line-height: 200%;
+            color: #333;
+            padding-top: 16px;
+            font-family: "microsoft yahei";
+        }
+
+        .art_wrap .top {
+            border-bottom: 1px solid #e0e0e0;
+            padding-bottom: 14px;
+            margin-bottom: 16px;
+        }
+
+        .art_title {
+            text-align: center;
+            color: #333;
+            padding-top: 24px;
+            padding-bottom: 10px;
+            font-weight: bold;
+            line-height: 100%;
+        }
+
+        img {
+            width: 100%;
+            margin-left: auto;
+            margin-right: auto;
+            display: block;
+            margin-top: 8px;
+        }
+
+        .replace {
+            height: 80px;
+        }
+
+        .art_info {
+            font-size: 12px;
+            text-align: center;
+        }
+
+        .art_info span {
+            padding-left: 14px;
+        }
+
+        .line_top {height: 55px;background-color: #000;width: 100%;font-size: 14px;color: #fff;opacity: 0.85;position: fixed;bottom: 0;display: none;}
+        .line_top a { display: block; }
+        .line_top .left, .line_top .center, .line_top .right { float: left; }
+        .line_top .left img {padding-top: 5px;padding-left: 5px;margin-top: 0;}
+        .line_top .center p { color: white; }
+        .line_top .center .p1 { padding-top: 2px; }
+        .line_top .center .p2 { padding-top: 2px; }
+        .line_top .center {padding-top: 8px;padding-left: 10px;}
+        .line_top .right a {width: 85px;height: 30px;line-height: 30px;border-radius: 4px;display: block;background-color: #00a0f4;text-align: center;color: #fff;}
+        .line_top .right {padding-top: 13px;float: right;}
+        .line_top .right a {float: right;margin-right: 5px;}
+
+        .bg {
+            background: url(/Areas/Activity/img/bg.png) no-repeat;
+            background-size: 100% auto;
+            width: 100%;
+            height: 100%;
+            display: none;
+            position: absolute;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 99;
+        }
+
+    </style>
+</head>
+<body>
+<div class="maintop">
+    <img src="/Areas/Activity/img/icon.png" alt=""/>
+    <a href="#" class="btn">用医客App打开</a>
+</div>
+<div class="art_wrap">
+    <div class="top">
+        <h2 class="art_title">@Model.Title</h2>
+    </div>
+    <div>
+        @Html.Raw(Model.Detail)
+    </div>
+</div>
+@if (Model.IsShowJoinActivity && Model.Status != ActivityStatus.Over)
+{
+    <div class="art_btn">
+        <a id="JoinActivityHref" href="@Model.JoinActivityUrl" rel="@Model.JoinActivityUrl">立即参与</a>
+    </div>
+}
+<div class="line_top">
+    <div class="container">
+        <div class="left">
+            <img src="/Areas/Activity/img/icon.png" style="width: 45px;" alt="">
+        </div>
+        <div class="center">
+            <p class="p1">医 客</p>
+            <p>最好用的医生助手</p>
+        </div>
+        <div class="right">
+            <a href="http://a.app.qq.com/o/simple.jsp?pkgname=com.hk515.docclient&g_f=991653">立即下载</a>
+        </div>
+    </div>
+</div>
+<div class="bg"></div>
+<div class="replace">
+</div>
+<script src="~/Areas/Activity/JavaScript/jquery-2.1.0.min.js"></script>
+<script>
+    $(function() {
+        if (window.location.search.indexOf('IsSharedUrl=true') > -1) {
+
+            $('.maintop').on('touchend', function() {
+                if (navigator.userAgent.toLowerCase().indexOf("micromessenger") > -1) {
+                    $('.bg').show();
+                } else {
+                    openActivityDetailInApp("@Model.ActivityId");
+                }
+            });
+            $('.bg').on('touchend', function() {
+                $('.bg').hide();
+            });
+
+            $(".maintop").css("display", "inherit");
+
+            if ($(".art_btn").length === 0) {
+                $(".line_top").css("display", "inherit");
+            }
+        }
+    });
+
+    function openActivityDetailInApp(activityId) {
+        var schemeUrl = "hkhealer://platformapi/activitypage?activityid=" + activityId;
+
+        var ifr = document.createElement('iframe');
+        ifr.src = schemeUrl;
+        ifr.style.display = 'none';
+        document.body.appendChild(ifr);
+
+        // 延迟移除用来唤起钱包的IFRAME并跳转到下载页
+        setTimeout(function() {
+            location.href = "http://dtyk.hk515.com/";
+        }, 1000);
+    }
+
+</script>
+    <script src="/Areas/Activity/JavaScript/bds.js"></script>
+</body>
+</html>
